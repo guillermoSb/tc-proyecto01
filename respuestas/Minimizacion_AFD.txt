@@ -1,0 +1,6 @@
+ESTADOS = ['I', 'J', 'K', 'L', 'M']
+SIMBOLOS = ['a', 'b']
+INICIO = ['I']
+ACEPTACION = ['M']
+TRANSICIONES = [('I', 'a', 'K'), ('I', 'b', 'I'), ('J', 'a', 'L'), ('J', 'b', 'M'), ('K', 'a', 'I'), ('K', 'b', 'M'), ('L', 'a', 'L'), ('L', 'b', 'L'), ('M', 'a', 'L'), ('M', 'b', 'J')]
+NUEVA REPRESENTACION DE ESTADOS = {'I': ['A', 'E', 'F'], 'J': ['G'], 'K': ['B'], 'L': ['D'], 'M': ['C', 'H']}
