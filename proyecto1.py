@@ -174,7 +174,6 @@ class Automata:
 
     def grouping(self, subGroups, nonAccepting, symbols, transitions): 
 
-        #Filling list with all the states and booleans
         newGroups = []
         states = [j for i in nonAccepting for j in i]
 
