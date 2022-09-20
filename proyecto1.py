@@ -236,11 +236,27 @@ class Automata:
         f.write("SIMBOLOS = " + str(symbols) + '\n')
         f.write("INICIO = " + str(start) + '\n')
         f.write("ACEPTACION = " + str(accepting) + '\n')
-        f.write("TRANSICIONES = " + str(transitions) + '\n')
+        f.write("TRANSICIONES = [")
+        for indx in range(len(transitions)):
+            if indx < 1:
+                f.write(str(transitions[indx]) + ',\n')
+            if indx == len(transitions) -1: 
+                f.write('\t\t\t\t' + str(transitions[indx]) + ']')
+            elif indx >= 1:
+                f.write('\t\t\t\t' + str(transitions[indx]) + ',\n')
+            
+            
+        f.write('\n')
 
         if type == 'mini':
-            f.write("NUEVA REPRESENTACION DE ESTADOS = " + str(dict) + '\n')
-
+            f.write("NUEVA REPRESENTACION DE ESTADOS = {")
+            for index, (k, v) in enumerate(dict.items()):
+                if index < 1:
+                    f.write("'" + str(k) + "': " + str(v) + ',\n')
+                if index == len(dict) -1: 
+                    f.write('\t\t\t\t\t\t\t\t' + "   '" + str(k) + "': " + str(v) + '}')
+                elif index >= 1:
+                    f.write('\t\t\t\t\t\t\t\t' + "   '" + str(k) + "': " + str(v) + ',\n')
         f.close()
 
 
