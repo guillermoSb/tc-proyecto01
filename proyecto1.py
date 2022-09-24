@@ -1,3 +1,5 @@
+from distutils.ccompiler import new_compiler
+from textwrap import indent
 from typing import final
 
 class Automata:
@@ -67,10 +69,8 @@ class Automata:
                 else:
                     newState += self.transitionTable[self.states.index(_)][self.symbols.index(symbol)]
 
-        if len(newState)>1:
+        if len(newState)>=1:
             return newState
-        elif len(newState) == 1:
-            return newState[0]
         else:
             return None
 
@@ -112,6 +112,36 @@ class Automata:
             if notFound == False:
                 break
 
+                        
+    def cleanAFD(self):
+        #Esta funcion debe limpiar el AFD resultante de las funciones para convertir de AFN a AFD
+        index = -1
+        if '&' in self.symbols:
+            index = self.symbols.index('&')
+        if index != -1:
+            self.changeState(index=index)
+
+    def changeState(self, index):
+        remove = []
+        for x in self.AFD:
+            flag = False
+            for i in x[1]:
+                if i != None and x[1].index(i) != index:
+                    flag = True
+            #print(x, flag)
+            if flag == False and x[0] == self.start:
+                self.start = x[1][index]
+
+            if flag == False and x[1][index] != None:
+                for i in range(len(self.AFD)):
+                    for ii in range(len(self.AFD[i][1])):
+                        if self.AFD[i][1][ii] == x[0]:
+                            self.AFD[i][1][ii] = x[1][index]
+
+                remove.append(x)
+
+        for x in remove:
+            self.AFD.remove(x)
 
 
     def toAFD(self):
@@ -124,12 +154,8 @@ class Automata:
             endStatus = self.transitions[_][2]
 
             if transition == "&":
-                #print(endStatus)
-                #print("empieza")
-                #print(self.find3scope(endStatus))
                 endStatus = self.find3scope(endStatus, transitions=[])
 
-            #print(endStatus)
             if type(endStatus) is list:
                     endStatus = sorted(endStatus)
 
@@ -145,9 +171,62 @@ class Automata:
                 else:
                     self.transitionTable[statusIndex][symbolIndex] += endStatus
 
-        #print(self.transitionTable)
         self.defineAFD()
+        self.cleanAFD()
+        
+        newAcceptance = []
 
+        for x in self.AFD:
+            for i in self.acceptance or i == self.acceptance:
+                if i in x[0]:
+                    newAcceptance.append(x[0])
+
+        self.acceptance = newAcceptance
+
+        self.modifyStateStructure()
+
+        newStates = []
+        newTransitions = []
+        for x in self.AFD:
+            newStates.append(x[0])
+            for i in self.symbols:
+                if i != '&' and i != None:
+                    newTransitions.append((x[0], i, x[1][self.symbols.index(i)]))
+                else:
+                    for ii in self.symbols:
+                        if ii != '&' and ii != None and (x[0], ii, x[1][self.symbols.index(ii)]) not in newTransitions:
+                            newTransitions.append((x[0], ii, x[1][self.symbols.index(ii)]))
+        
+        self.states = newStates
+        self.transitions = newTransitions
+
+        print(self.acceptance, self.start, self.transitions)
+
+        #for x in self.AFD:
+        #    print(x)
+
+    def modifyStateStructure(self):
+        prefix = 'S'
+        index = 0
+        for x in range(len(self.AFD)):
+            state = self.AFD[x][0]
+            if state in self.acceptance:
+                self.acceptance[self.acceptance.index(state)] = prefix + str(index)
+            
+            if state == self.start:
+                self.start = prefix + str(index)
+
+            for i in range(len(self.AFD)):
+                for ii in range(len(self.AFD[i][1])):
+                    if self.AFD[i][1][ii] == self.AFD[x][0]:
+                        self.AFD[i][1][ii] = prefix + str(index)
+                    
+                    if type(self.AFD[i][1][ii]) != list and len(self.AFD[x][0]) == 1 and self.AFD[i][1][ii] == self.AFD[x][0][0]:
+                        self.AFD[i][1][ii] = prefix + str(index)
+
+            self.AFD[x][0] = prefix + str(index)
+            
+            index += 1
 
     def setMaker(self, dict):
 
@@ -216,6 +295,8 @@ class Automata:
             prevSyms = nonAccepting
             subSets = self.grouping(subSets, prevSyms, self.symbols, self.transitions)
 
+            #print(prevGroups,subSets)
+
             if sorted(prevGroups) == sorted(subSets):
                 bandera = False
 
@@ -235,11 +316,27 @@ class Automata:
         f.write("SIMBOLOS = " + str(symbols) + '\n')
         f.write("INICIO = " + str(start) + '\n')
         f.write("ACEPTACION = " + str(accepting) + '\n')
-        f.write("TRANSICIONES = " + str(transitions) + '\n')
+        f.write("TRANSICIONES = [")
+        for indx in range(len(transitions)):
+            if indx < 1:
+                f.write(str(transitions[indx]) + ',\n')
+            if indx == len(transitions) -1: 
+                f.write('\t\t\t\t' + str(transitions[indx]) + ']')
+            elif indx >= 1:
+                f.write('\t\t\t\t' + str(transitions[indx]) + ',\n')
+            
+            
+        f.write('\n')
 
         if type == 'mini':
-            f.write("NUEVA REPRESENTACION DE ESTADOS = " + str(dict) + '\n')
-
+            f.write("NUEVA REPRESENTACION DE ESTADOS = {")
+            for index, (k, v) in enumerate(dict.items()):
+                if index < 1:
+                    f.write("'" + str(k) + "': " + str(v) + ',\n')
+                if index == len(dict) -1: 
+                    f.write('\t\t\t\t\t\t\t\t' + "   '" + str(k) + "': " + str(v) + '}')
+                elif index >= 1:
+                    f.write('\t\t\t\t\t\t\t\t' + "   '" + str(k) + "': " + str(v) + ',\n')
         f.close()
 
 
@@ -288,6 +385,7 @@ class Automata:
         newTransitions = noDuplicatesList
 
         self.writeTxt('respuestas/Minimizacion_AFD.txt', newStates, self.symbols, newStart, newAcceptance, newTransitions, 'mini', statesD)
+
 
     def fromRegex(regex):
         posfixExpression = regex.toPosfix()
@@ -400,3 +498,13 @@ class Automata:
 # k = Automata(states=["A","B","C","D","E","F","G","H"], symbols=["a","b"], start=["A"], acceptance=["C", "H"], transitions=[("A","a","B"), ("A","b","E"), ("B","a","F"), ("B","b","C"), ("C","a","D"), ("C","b","G"), ("D","a","D"), ("D","b","D"), ("E","a","B"), ("E","b","E"), ("F","a","B"), ("F","b","E"), ("G","a","D"), ("G","b","H"), ("H","a","D"), ("H","b","G")])
 #
 # k.minimizeAFD(k.partition())
+
+
+
+x = Automata(states=["0","1","2","3","4","5","6","7"], symbols=["a","b","&"], start=["0"], acceptance=["7"], transitions=[("0","&","1"), ("0","&","4"), ("1","a","2"), ("1","&","3"), ("2","a","3"), ("3","&","7"), ("7","&","0"), ("4","b","5"), ("4","&","6"), ("5","b","6"), ("6","&","7")])
+y = Automata(states=["A","B","C","D","E"], symbols=["a","b"], start=["A"], acceptance=["E"], transitions=[("A","a","B"), ("A","b","C"), ("B","a","B"), ("B","b","D"), ("C","a","B"), ("C","b","C"), ("D","a","B"), ("D","b","E"), ("E","a","B"), ("E","b","C")])
+z = Automata(states=["A","B","C","D","E","F","G","H"], symbols=["0","1"], start=["A"], acceptance=["C"], transitions=[("A","0","B"), ("A","1","F"), ("B","0","G"), ("B","1","C"), ("C","0","A"), ("C","1","C"), ("D","0","C"), ("D","1","G"), ("E","0","H"), ("E","1","F"), ("F","0","C"), ("F","1","G"), ("G","0","G"), ("G","1","E"), ("H","0","G"), ("H","1","C")])
+k = Automata(states=["A","B","C","D","E","F","G","H"], symbols=["a","b"], start=["A"], acceptance=["C", "H"], transitions=[("A","a","B"), ("A","b","E"), ("B","a","F"), ("B","b","C"), ("C","a","D"), ("C","b","G"), ("D","a","D"), ("D","b","D"), ("E","a","B"), ("E","b","E"), ("F","a","B"), ("F","b","E"), ("G","a","D"), ("G","b","H"), ("H","a","D"), ("H","b","G")])                                                                                    
+
+k.minimizeAFD(k.partition())
+
