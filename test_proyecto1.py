@@ -163,3 +163,4 @@ def test_can_convert_complex_automata_2():
     for t in expectedAutomata.transitions:
         idx = automataFromRegex.transitions.index(t)
         assert idx >= 0
+
