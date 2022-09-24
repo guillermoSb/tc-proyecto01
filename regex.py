@@ -13,15 +13,15 @@ class Regex:
         precedences = {
             "*": 2,
             "@": 1,
-            "+": 0,
+            "|": 0,
             "(": -1,
             ")": -1
         }
         # Start Shunting-Yard Algorithm
         for char in input:
-            if char not in ["*", "@", "+", "(", ")"]:
+            if char not in ["|", "@", "+", "(", ")"]:
                 output_queue += char
-            elif char in ["*", "@", "+"]:
+            elif char in ["|", "@", "+"]:
                 while len(operator_stack) > 0:
                     if precedences[operator_stack[0]] < precedences[char]:
                         break
