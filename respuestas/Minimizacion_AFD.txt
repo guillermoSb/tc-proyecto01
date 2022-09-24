@@ -1,16 +1,11 @@
-ESTADOS = ['F', 'G', 'H', 'I']
+ESTADOS = ['S8', 'S9']
 SIMBOLOS = ['a', 'b']
-INICIO = ['F']
-ACEPTACION = ['I']
-TRANSICIONES = [('F', 'a', 'G'),
-				('F', 'b', 'F'),
-				('G', 'a', 'G'),
-				('G', 'b', 'H'),
-				('H', 'a', 'G'),
-				('H', 'b', 'I'),
-				('I', 'a', 'G'),
-				('I', 'b', 'F')]
-NUEVA REPRESENTACION DE ESTADOS = {'F': ['A', 'C'],
-								   'G': ['B'],
-								   'H': ['D'],
-								   'I': ['E']}
+INICIO = []
+ACEPTACION = ['S8']
+TRANSICIONES = [('S8', 'a', 'S9'),
+				('S8', 'b', 'S9'),
+				('S9', 'a', 'S9'),
+				('S9', 'b', 'S8'),
+				('S9', 'b', 'S9')]
+NUEVA REPRESENTACION DE ESTADOS = {'S8': ['S4', 'S7'],
+								   'S9': ['S0', 'S1', 'S2', 'S3', 'S5', 'S6']}

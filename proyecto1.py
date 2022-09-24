@@ -200,7 +200,7 @@ class Automata:
         self.states = newStates
         self.transitions = newTransitions
 
-        print(self.acceptance, self.start, self.transitions)
+        # print(self.acceptance, self.start, self.transitions)
 
         #for x in self.AFD:
         #    print(x)
@@ -306,7 +306,10 @@ class Automata:
             newSD[indx] += subSets[indx]
 
         for indx in range(len(newSD.keys())):
-            newSD[chr(ord(self.states[-1])+indx+1)] = newSD.pop(indx)
+            lastSVal = self.states[-1][-1]
+            newVal = int(lastSVal)+indx+1
+            newState = 'S' + str(newVal)
+            newSD[newState] = newSD.pop(indx)
 
         return newSD   
 
