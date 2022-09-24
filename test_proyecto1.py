@@ -43,6 +43,7 @@ def test_can_convert_case_1_thompson():
         assert idx >= 0
 
 
+
 def test_can_convert_case_2_thompson():
     # Union
     # Arrange
@@ -163,4 +164,4 @@ def test_can_convert_complex_automata_2():
     for t in expectedAutomata.transitions:
         idx = automataFromRegex.transitions.index(t)
         assert idx >= 0
-
+    automataFromRegex.toAFD()
