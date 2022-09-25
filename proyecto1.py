@@ -1,7 +1,7 @@
 from distutils.ccompiler import new_compiler
 from textwrap import indent
 from typing import final
-
+from regex import Regex
 
 class Automata:
 
@@ -20,7 +20,7 @@ class Automata:
         self.AFD = []
 
         self.createMatrix()
-        # self.toAFD() Commented because of issues when regex is built.
+        #self.toAFD()
 
     def createMatrix(self):
         self.matrix = [[[0 for _ in range(len(self.symbols))] for _ in range(len(self.states))] for _ in
@@ -519,3 +519,14 @@ class Automata:
 #                      ('1', '&', '5'), ('3', '&', '5'), ('5', '&', '4'), ('7', '&', '8'), ('7', '&', '4'),
 #                      ('5', '&', '8'), ('10', '&', '7')]
 #     )
+
+regex = Regex("(a|b)")
+# Act
+automataFromRegex = Automata.fromRegex(regex)
+automataFromRegex.toAFD()
+print(automataFromRegex.states)
+print(automataFromRegex.transitions)
+print(automataFromRegex.transitionTable)
+print(automataFromRegex.symbols)
+print(automataFromRegex.start)
+print(automataFromRegex.acceptance)
