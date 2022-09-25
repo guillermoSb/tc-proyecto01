@@ -520,7 +520,7 @@ class Automata:
 #                      ('5', '&', '8'), ('10', '&', '7')]
 #     )
 
-regex = Regex("(a|b)")
+regex = Regex("a@(a|b)*")
 # Act
 automataFromRegex = Automata.fromRegex(regex)
 automataFromRegex.toAFD()
@@ -530,3 +530,13 @@ print(automataFromRegex.transitionTable)
 print(automataFromRegex.symbols)
 print(automataFromRegex.start)
 print(automataFromRegex.acceptance)
+
+test_automata = Automata(
+    acceptance=['8'],
+    start=['9'],
+    states=['9', '10', '0', '1', '2', '3', '4', '5', '7', '8'],
+    symbols=['a', 'b', '&'],
+    transitions=[('9', 'a', '10'), ('0', 'a', '1'), ('2', 'b', '3'), ('4', '&', '0'), ('4', '&', '2'),
+                 ('1', '&', '5'), ('3', '&', '5'), ('5', '&', '4'), ('7', '&', '8'), ('7', '&', '4'),
+                 ('5', '&', '8'), ('10', '&', '7')]
+)
