@@ -528,7 +528,8 @@ class Automata:
 #                      ('5', '&', '8'), ('10', '&', '7')]
 #     )
 
-regex = Regex("(a|b)*")
+regex = Regex("a@(a|b)*")
+
 # Act
 automataFromRegex = Automata.fromRegex(regex)
 automataFromRegex.toAFD()
@@ -539,3 +540,4 @@ for x in automataFromRegex.transitions:
 # print(automataFromRegex.symbols)
 # print(automataFromRegex.start)
 print(automataFromRegex.acceptance)
+
