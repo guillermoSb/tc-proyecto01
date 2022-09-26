@@ -543,13 +543,18 @@ class Automata:
         state = self.start
         for char in word:
             # Find a possible transition
+            if char not in self.symbols:
+                return False
+            flag = False
             for t in self.transitions:
                 if t[0] == state and t[1] == char and t[2] is not None:
                     # found a transition - go to the next state
+                    print(t)
                     state = t[2]
+                    flag = True
                     break
-
-        print(self.acceptance)
+            if flag == False:
+                return False
         if self.acceptance.count(state) > 0:
             acceptance = True
 
@@ -594,11 +599,13 @@ class Automata:
 #                      ('5', '&', '8'), ('10', '&', '7')]
 #     )
 
-regex = Regex("(b|b)*@a@b@b@(a|b)*")
+regex = Regex("a@(a|b)*")
 automataFromRegex = Automata.fromRegex(regex)
 # Act
-automataFromRegex.toAFD()
-result = automataFromRegex.simulate_afd("babbaaaaab")
+# Act
+#automataFromRegex.toAFD()
+result = automataFromRegex.simulate_afn("abaaabbb")
+#result = automataFromRegex.simulate_afd("babbbaaaaab")
 # Assert
 print(result)
 
