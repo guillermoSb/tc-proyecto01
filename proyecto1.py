@@ -609,3 +609,4 @@ result = automataFromRegex.simulate_afn("abaaabbb")
 # Assert
 print(result)
 
+
