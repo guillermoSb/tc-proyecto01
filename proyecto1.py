@@ -499,6 +499,43 @@ class Automata:
 
         return stack[0]
 
+    def e_closure(self, state):
+        closure = [state]
+        # Get index for starting state
+        idx = self.states.index(state)
+        # Start building the closure
+        for i in range(0,len(self.matrix[idx])):
+            if self.matrix[idx][i].count("&") > 0 and i != idx:
+                closure = closure + self.e_closure(self.states[i])
+
+        return closure
+
+    def e_closures(self, states):
+        for state in states:
+            c = self.e_closure(state)
+            states = states + c
+        return list(dict.fromkeys(states))
+
+    def move(self, s, c):
+        end_states = []
+        for state in s:
+            # Get the index on the state
+            idx = self.states.index(state)
+            for i in range(0, len(self.matrix[idx])):
+                if self.matrix[idx][i].count(c) > 0:
+                    end_states.append(self.states[i])
+        return end_states
+
+
+
+    def simulate_afn(self, word):
+        s = self.e_closure(self.start[0])
+        for char in word:
+            s = self.e_closures(self.move(s, char))
+        for state in s:
+            if self.acceptance.count(state) > 0: return True
+        return False
+
 #
 # x = Automata(states=["0", "1", "2", "3", "4", "5", "6", "7"], symbols=["a", "b", "&"], start=["0"], acceptance=["7"],
 #              transitions=[("0", "&", "1"), ("0", "&", "4"), ("1", "a", "2"), ("1", "&", "3"), ("2", "a", "3"),
@@ -528,16 +565,13 @@ class Automata:
 #                      ('5', '&', '8'), ('10', '&', '7')]
 #     )
 
-regex = Regex("a@(a|b)*")
-
-# Act
-automataFromRegex = Automata.fromRegex(regex)
-automataFromRegex.toAFD()
-print(automataFromRegex.states)
-for x in automataFromRegex.transitions:
-    print(x)
-# print(automataFromRegex.transitions)
-# print(automataFromRegex.symbols)
-# print(automataFromRegex.start)
-print(automataFromRegex.acceptance)
+# regex = Regex("a@(a|b)*")
+#
+# # Act
+# automataFromRegex = Automata.fromRegex(regex)
+# automataFromRegex.simulate_afn("abbbbb")
+# # print(automataFromRegex.transitions)
+# # print(automataFromRegex.symbols)
+# # print(automataFromRegex.start)
+# print(automataFromRegex.acceptance)
 
