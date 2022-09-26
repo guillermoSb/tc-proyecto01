@@ -221,6 +221,6 @@ def test_can_simulate_afn_4():
     regex = Regex("(b|b)*@a@b@b@(a|b)*")
     automataFromRegex = Automata.fromRegex(regex)
     # Act
-    result = automataFromRegex.simulate_afn("aaaabbb")
+    result = automataFromRegex.simulate_afn("babbaaaaa")
     # Assert
     assert result

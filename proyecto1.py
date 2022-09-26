@@ -565,13 +565,13 @@ class Automata:
 #                      ('5', '&', '8'), ('10', '&', '7')]
 #     )
 
-# regex = Regex("a@(a|b)*")
+# regex = Regex("(a|b)*")
 #
 # # Act
 # automataFromRegex = Automata.fromRegex(regex)
-# automataFromRegex.simulate_afn("abbbbb")
-# # print(automataFromRegex.transitions)
-# # print(automataFromRegex.symbols)
-# # print(automataFromRegex.start)
+# automataFromRegex.toAFD()
+# print(automataFromRegex.transitions)
+# print(automataFromRegex.symbols)
+# print(automataFromRegex.start)
 # print(automataFromRegex.acceptance)
 
