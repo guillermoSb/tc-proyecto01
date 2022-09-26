@@ -19,6 +19,12 @@ class Automata:
         self.transitions = transitions
         self.AFD = []
 
+        #print(states, "states")
+        #print(symbols, "symbols")
+        #print(start, "start")
+        # print(acceptance, "acceptance")
+        #print(transitions, "transitions")
+
         self.createMatrix()
         #self.toAFD()
 
@@ -67,18 +73,20 @@ class Automata:
                     if type(res) is list:
                         for i in res:
                             if i not in newState:
-                                newState += i
+                                newState.append(i)
                     else:
-                        newState += self.transitionTable[self.states.index(_)][self.symbols.index(symbol)]
+                        if self.transitionTable[self.states.index(_)][self.symbols.index(symbol)] not in newState:
+                            newState.append(self.transitionTable[self.states.index(_)][self.symbols.index(symbol)])
         else:
             res = self.transitionTable[self.states.index(state)][self.symbols.index(symbol)]
             if res is not None:
                 if type(res) is list:
                     for i in res:
                         if i not in newState:
-                            newState += i
+                            newState.append(i)
                 else:
-                    newState += self.transitionTable[self.states.index(state)][self.symbols.index(symbol)]
+                    if self.transitionTable[self.states.index(state)][self.symbols.index(symbol)] not in newState:
+                        newState.append(self.transitionTable[self.states.index(state)][self.symbols.index(symbol)])
 
         if len(newState) >= 1:
             return newState
@@ -184,15 +192,18 @@ class Automata:
                             self.transitionTable[statusIndex][symbolIndex] += endStatus
                 else:
                     self.transitionTable[statusIndex][symbolIndex] += endStatus
-
+        #print(self.states)
         self.defineAFD()
+        #for x in self.AFD: print(x)
         self.cleanAFD()
 
         newAcceptance = []
 
+        #print(self.AFD)
+
         for x in self.AFD:
-            for i in self.acceptance or i == self.acceptance:
-                if i in x[0]:
+            for i in self.acceptance:
+                if i in x[0] or i == self.acceptance:
                     newAcceptance.append(x[0])
 
         self.acceptance = newAcceptance
@@ -565,13 +576,13 @@ class Automata:
 #                      ('5', '&', '8'), ('10', '&', '7')]
 #     )
 
-# regex = Regex("(a|b)*")
+regex = Regex("(b|b)*@a@b@b@(a|b)*")
 #
 # # Act
-# automataFromRegex = Automata.fromRegex(regex)
-# automataFromRegex.toAFD()
-# print(automataFromRegex.transitions)
+automataFromRegex = Automata.fromRegex(regex)
+automataFromRegex.toAFD()
+print(automataFromRegex.transitions)
 # print(automataFromRegex.symbols)
-# print(automataFromRegex.start)
-# print(automataFromRegex.acceptance)
+print(automataFromRegex.start)
+print(automataFromRegex.acceptance)
 
