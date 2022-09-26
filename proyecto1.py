@@ -588,7 +588,7 @@ regex = Regex("(b|a)*@a")
 # Act
 automataFromRegex = Automata.fromRegex(regex)
 automataFromRegex.toAFD()
-print(automataFromRegex.acceptance)
+print(automataFromRegex.acceptance) 
 
 print(automataFromRegex.simulate_afd("bab"))
 
