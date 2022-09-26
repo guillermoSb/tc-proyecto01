@@ -29,13 +29,11 @@ class Automata:
         for _ in range(len(self.transitions)):
             self.matrix[self.states.index(self.transitions[_][0])][self.states.index(self.transitions[_][2])][
                 self.symbols.index(self.transitions[_][1])] = self.transitions[_][1]
+    
 
     def find3scope(self, state, transitions=[]):
-        # print(state,transitions)
         if type(state) != list:
-            # print(state not in transitions)
             if state not in transitions:
-                # print("Asd")
                 transitions.append(state)
                 for _ in self.transitions:
                     if _[0] == state and _[1] == "&":
@@ -62,15 +60,25 @@ class Automata:
 
         newState = []
 
-        for _ in state:
-            res = self.transitionTable[self.states.index(_)][self.symbols.index(symbol)]
+        if type(state) == list:
+            for _ in state:
+                res = self.transitionTable[self.states.index(_)][self.symbols.index(symbol)]
+                if res is not None:
+                    if type(res) is list:
+                        for i in res:
+                            if i not in newState:
+                                newState += i
+                    else:
+                        newState += self.transitionTable[self.states.index(_)][self.symbols.index(symbol)]
+        else:
+            res = self.transitionTable[self.states.index(state)][self.symbols.index(symbol)]
             if res is not None:
                 if type(res) is list:
                     for i in res:
                         if i not in newState:
                             newState += i
                 else:
-                    newState += self.transitionTable[self.states.index(_)][self.symbols.index(symbol)]
+                    newState += self.transitionTable[self.states.index(state)][self.symbols.index(symbol)]
 
         if len(newState) >= 1:
             return newState
@@ -78,7 +86,7 @@ class Automata:
             return None
 
     def defineAFD(self):
-        start = [self.start if type(self.start) == list else [self.start], [_ for _ in self.transitionTable[0]]]
+        start = [self.start if type(self.start) == list else [self.start], [_ for _ in self.transitionTable[self.states.index(self.start[0])]]]
 
         self.AFD.append(start)
 
@@ -129,15 +137,19 @@ class Automata:
             for i in x[1]:
                 if i != None and x[1].index(i) != index:
                     flag = True
-            # print(x, flag)
             if flag == False and x[0] == self.start:
                 self.start = x[1][index]
 
             if flag == False and x[1][index] != None:
                 for i in range(len(self.AFD)):
                     for ii in range(len(self.AFD[i][1])):
-                        if self.AFD[i][1][ii] == x[0]:
+                        if type(self.AFD[i][1][ii]) == list and self.AFD[i][1][ii] == x[0]:
                             self.AFD[i][1][ii] = x[1][index]
+                        elif type(self.AFD[i][1][ii]) != list and [self.AFD[i][1][ii]] == x[0]:
+                            self.AFD[i][1][ii] = x[1][index]
+                        else:
+                            pass
+
 
                 remove.append(x)
 
@@ -147,6 +159,7 @@ class Automata:
     def toAFD(self):
         self.transitionTable = [[None for _ in range(len(self.symbols))] for _ in range(len(self.states))]
 
+
         for _ in range(len(self.transitions)):
 
             startStatus = self.transitions[_][0]
@@ -155,6 +168,7 @@ class Automata:
 
             if transition == "&":
                 endStatus = self.find3scope(endStatus, transitions=[])
+                #endStatus.append(startStatus)
 
             if type(endStatus) is list:
                 endStatus = sorted(endStatus)
@@ -200,10 +214,6 @@ class Automata:
         self.states = newStates
         self.transitions = newTransitions
 
-        # print(self.acceptance, self.start, self.transitions)
-
-        # for x in self.AFD:
-        #    print(x)
 
     def modifyStateStructure(self):
         prefix = 'S'
@@ -293,8 +303,6 @@ class Automata:
             prevGroups = subSets
             prevSyms = nonAccepting
             subSets = self.grouping(subSets, prevSyms, self.symbols, self.transitions)
-
-            # print(prevGroups,subSets)
 
             if sorted(prevGroups) == sorted(subSets):
                 bandera = False
@@ -526,22 +534,15 @@ class Automata:
 #     )
 
 regex = Regex("a@(a|b)*")
+
 # Act
 automataFromRegex = Automata.fromRegex(regex)
 automataFromRegex.toAFD()
 print(automataFromRegex.states)
-print(automataFromRegex.transitions)
-print(automataFromRegex.transitionTable)
-print(automataFromRegex.symbols)
-print(automataFromRegex.start)
+for x in automataFromRegex.transitions:
+    print(x)
+# print(automataFromRegex.transitions)
+# print(automataFromRegex.symbols)
+# print(automataFromRegex.start)
 print(automataFromRegex.acceptance)
 
-test_automata = Automata(
-    acceptance=['8'],
-    start=['9'],
-    states=['9', '10', '0', '1', '2', '3', '4', '5', '7', '8'],
-    symbols=['a', 'b', '&'],
-    transitions=[('9', 'a', '10'), ('0', 'a', '1'), ('2', 'b', '3'), ('4', '&', '0'), ('4', '&', '2'),
-                 ('1', '&', '5'), ('3', '&', '5'), ('5', '&', '4'), ('7', '&', '8'), ('7', '&', '4'),
-                 ('5', '&', '8'), ('10', '&', '7')]
-)
