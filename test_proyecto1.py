@@ -165,3 +165,62 @@ def test_can_convert_complex_automata_2():
         idx = automataFromRegex.transitions.index(t)
         assert idx >= 0
 
+def test_can_get_e_closure():
+    # Arrange
+    regex = Regex("a@b")
+    automataFromRegex = Automata.fromRegex(regex)
+    # Act
+    closure = automataFromRegex.e_closure("1")
+    # Assert
+    closure_items = ["1","2"]
+    assert len(closure) == 2
+    assert closure == closure_items
+
+def test_can_get_e_closure_2():
+    # Arrange
+    regex = Regex("a*")
+    automataFromRegex = Automata.fromRegex(regex)
+    # Act
+    closure = automataFromRegex.e_closure("1")
+    # Assert
+    print(closure)
+    closure_items = ["1", "0", "3"]
+    assert len(closure) == len(closure_items)
+    assert closure == closure_items
+
+def test_can_simulate_afn():
+    # Arrange
+    regex = Regex("a@b")
+    automataFromRegex = Automata.fromRegex(regex)
+    # Act
+    result = automataFromRegex.simulate_afn("ab")
+    # Assert
+    assert result
+
+
+def test_can_simulate_afn_2():
+    # Arrange
+    regex = Regex("a*")
+    automataFromRegex = Automata.fromRegex(regex)
+    # Act
+    result = automataFromRegex.simulate_afn("aaaaaaab")
+    # Assert
+    assert result
+
+def test_can_simulate_afn_3():
+    # Arrange
+    regex = Regex("a@(a|b)*")
+    automataFromRegex = Automata.fromRegex(regex)
+    # Act
+    result = automataFromRegex.simulate_afn("aaaabbb")
+    # Assert
+    assert result
+
+def test_can_simulate_afn_4():
+    # Arrange
+    regex = Regex("(b|b)*@a@b@b@(a|b)*")
+    automataFromRegex = Automata.fromRegex(regex)
+    # Act
+    result = automataFromRegex.simulate_afn("aaaabbb")
+    # Assert
+    assert result
