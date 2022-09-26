@@ -527,6 +527,24 @@ class Automata:
         return end_states
 
 
+    def simulate_afd(self, word):
+        acceptance = False
+        state = self.start
+        for char in word:
+            # Find a possible transition
+            for t in self.transitions:
+                if t[0] == state and t[1] == char and t[2] is not None:
+                    # found a transition - go to the next state
+                    state = t[2]
+                    break
+
+        print(self.acceptance)
+        if self.acceptance.count(state) > 0:
+            acceptance = True
+
+        return acceptance
+
+
 
     def simulate_afn(self, word):
         s = self.e_closure(self.start[0])
@@ -565,13 +583,13 @@ class Automata:
 #                      ('5', '&', '8'), ('10', '&', '7')]
 #     )
 
-# regex = Regex("(a|b)*")
-#
-# # Act
-# automataFromRegex = Automata.fromRegex(regex)
-# automataFromRegex.toAFD()
-# print(automataFromRegex.transitions)
-# print(automataFromRegex.symbols)
-# print(automataFromRegex.start)
-# print(automataFromRegex.acceptance)
+regex = Regex("(b|a)*@a")
+
+# Act
+automataFromRegex = Automata.fromRegex(regex)
+automataFromRegex.toAFD()
+print(automataFromRegex.acceptance)
+
+print(automataFromRegex.simulate_afd("bab"))
+
 
