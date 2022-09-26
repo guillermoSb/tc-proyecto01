@@ -491,6 +491,11 @@ class Automata:
 
         return stack[0]
 
+    def e_closure(self):
+        print("to do ")
+    def simulate_afn(self, word):
+        print(self.matrix)
+
 #
 # x = Automata(states=["0", "1", "2", "3", "4", "5", "6", "7"], symbols=["a", "b", "&"], start=["0"], acceptance=["7"],
 #              transitions=[("0", "&", "1"), ("0", "&", "4"), ("1", "a", "2"), ("1", "&", "3"), ("2", "a", "3"),
