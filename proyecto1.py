@@ -548,8 +548,7 @@ class Automata:
                     # found a transition - go to the next state
                     state = t[2]
                     break
-
-        print(self.acceptance)
+    
         if self.acceptance.count(state) > 0:
             acceptance = True
 
@@ -594,13 +593,9 @@ class Automata:
 #                      ('5', '&', '8'), ('10', '&', '7')]
 #     )
 
-regex = Regex("(b|b)*@a@b@b@(a|b)*")
-automataFromRegex = Automata.fromRegex(regex)
-# Act
-automataFromRegex.toAFD()
 
-result = automataFromRegex.simulate_afd("babbaaaaab")
-# Assert
-print(result)
+
+
+
 
 
