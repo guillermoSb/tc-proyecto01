@@ -278,10 +278,12 @@ class Automata:
         dict = {key: [] for key in nonAccepting}
 
         for group in subGroups:
+            # print(group)
             if len(group) == 1: continue
             for indx in range(len(group)):
                 for sym in symbols:
                     for t in transitions:
+                        # if(t[2] == None): continue
                         if group[indx] == t[0] and sym == t[1]:
                             if t[2] in group and group[indx] in dict.keys():
                                 dict[group[indx]] += [subGroups.index(group)]
@@ -386,6 +388,7 @@ class Automata:
         # Creating new transition list
         newTransitions = []
         for element in self.transitions:
+            if(element[2] == None): continue
             newTransitions.append(element)
 
         # Converting lists to tuples
@@ -395,8 +398,10 @@ class Automata:
         for transition in cList:
             for k, v in statesD.items():
                 if transition[0] in v:
+                    if transition[2] == None: continue
                     transition[0] = k
                 if transition[2] in v:
+                    if transition[2] == None: continue
                     transition[2] = k
 
         # Removing duplicates
@@ -603,7 +608,7 @@ regex = Regex("a@(a|b)*")
 automataFromRegex = Automata.fromRegex(regex)
 # Act
 # Act
-k.toAFD()
+x.toAFD()
 #automataFromRegex.toAFD()
 # result = automataFromRegex.simulate_afn("abaaabbb")
 #result = automataFromRegex.simulate_afd("babbbaaaaab")
@@ -611,4 +616,6 @@ k.toAFD()
 # print(result)
 
 
-k.minimizeAFD(k.partition())
+x.minimizeAFD(x.partition())
+
+# x.partition()
