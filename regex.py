@@ -55,11 +55,26 @@ class Regex:
                     # Create the nodes if the item is a character
                     if not isinstance(leftOperand, Node):
                         leftOperand = Node(value=leftOperand, right_child=None, left_child=None, position=position)
+                        leftOperand.first_pos = [position]
+                        leftOperand.last_pos = [position]
                         position += 1
                     if not isinstance(rightOperand, Node):
                         rightOperand = Node(value=rightOperand, right_child=None, left_child=None, position=position)
+                        rightOperand.first_pos = [position]
+                        rightOperand.last_pos = [position]
                         position += 1
                     new_node = Node(left_child=leftOperand, right_child=rightOperand, value=item)
+                    # If the operator is an union then the first pos is the union of the two childs
+                    if item == "|":
+                        new_node.first_pos = leftOperand.first_pos + rightOperand.first_pos
+                        new_node.last_pos = leftOperand.last_pos + rightOperand.last_pos
+                    if item == "@":
+                        new_node.first_pos = leftOperand.first_pos
+                        new_node.last_pos = rightOperand.last_pos
+                        if leftOperand.nullable():
+                            new_node.first_pos += rightOperand.first_pos
+                        if rightOperand.nullable():
+                            new_node.last_pos += leftOperand.last_pos
                 else:
                     # It is a * only has one middle child
                     operand = tree_stack.pop(0)
@@ -68,6 +83,8 @@ class Regex:
                         operand = Node(operand, value=rightOperand, position=position)
                         position += 1
                     new_node = Node(middle_child=operand,value=item, left_child=None, right_child=None)
+                    new_node.first_pos = operand.first_pos
+                    new_node.last_pos = operand.last_pos
                 # Add the new node to the tree stack
                 tree_stack.insert(0, new_node)
         return tree_stack[0]

@@ -287,3 +287,11 @@ def test_can_create_firstpos_lastpos():
     # Assert
     assert tree.first_pos == [1,2,3]
     assert tree.last_pos == [6]
+
+    assert tree.left_child.first_pos == [1,2,3]
+    assert tree.left_child.last_pos == [5]
+
+    assert tree.left_child.left_child.left_child.left_child.middle_child.right_child.first_pos == [2]
+    assert tree.left_child.left_child.left_child.left_child.middle_child.right_child.last_pos == [2]
+    assert tree.left_child.left_child.left_child.left_child.middle_child.left_child.first_pos == [1]
+    assert tree.left_child.left_child.left_child.left_child.middle_child.left_child.last_pos == [1]

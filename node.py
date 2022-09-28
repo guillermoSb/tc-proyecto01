@@ -1,4 +1,6 @@
 class Node:
+    first_pos = []
+    last_pos = []
     def __init__(self, left_child, right_child,value, middle_child = None, position = None):
         # In the case that the node only has a middle child assign a boolean to make the calculations easier
         if middle_child is not None:
