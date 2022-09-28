@@ -13,6 +13,7 @@ class Node:
         self.value = value
         self.position = position
 
+
     def nullable(self):
         # A node is nullable if
         # It is an union and one of the children is nullable

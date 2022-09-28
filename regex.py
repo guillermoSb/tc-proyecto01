@@ -68,13 +68,13 @@ class Regex:
                     if item == "|":
                         new_node.first_pos = leftOperand.first_pos + rightOperand.first_pos
                         new_node.last_pos = leftOperand.last_pos + rightOperand.last_pos
-                    if item == "@":
+                    elif item == "@":
                         new_node.first_pos = leftOperand.first_pos
                         new_node.last_pos = rightOperand.last_pos
                         if leftOperand.nullable():
-                            new_node.first_pos += rightOperand.first_pos
+                            new_node.first_pos = new_node.first_pos + rightOperand.first_pos
                         if rightOperand.nullable():
-                            new_node.last_pos += leftOperand.last_pos
+                            new_node.last_pos = new_node.last_pos +  leftOperand.last_pos
                 else:
                     # It is a * only has one middle child
                     operand = tree_stack.pop(0)
