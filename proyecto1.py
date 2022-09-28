@@ -225,6 +225,9 @@ class Automata:
         self.states = newStates
         self.transitions = newTransitions
 
+        self.writeTxt('respuestas/Conversion_AFN_AFD.txt', self.states, self.symbols, self.start, self.acceptance,
+                      self.transitions, 'conversion')
+
 
     def modifyStateStructure(self):
         prefix = 'S'
@@ -519,6 +522,9 @@ class Automata:
                     stack.insert(0, result_automata)
                     current_status += 1
 
+        stack[0].writeTxt('respuestas/FromRegex_To_AFN.txt', stack[0].states, stack[0].symbols, stack[0].start, stack[0].acceptance,
+                      stack[0].transitions, 'FromRegex_To_AFN')
+
         return stack[0]
 
     def e_closure(self, state):
@@ -612,11 +618,12 @@ k = Automata(states=["A", "B", "C", "D", "E", "F", "G", "H"], symbols=["a", "b"]
 
 regex = Regex("a@(a|b)*")
 automataFromRegex = Automata.fromRegex(regex)
+automataFromRegex.toAFD()
 # Act
 # Act
 k.toAFD()
 #automataFromRegex.toAFD()
-# result = automataFromRegex.simulate_afn("abaaabbb")
+result = automataFromRegex.simulate_afd("abaaabbb")
 #result = automataFromRegex.simulate_afd("babbbaaaaab")
 # Assert
 # print(result)
