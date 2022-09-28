@@ -243,3 +243,14 @@ def test_can_create_syntax_tree():
     assert tree.left_child.left_child.left_child.value == "a"
     assert tree.left_child.left_child.left_child.right_child is None
     assert tree.left_child.left_child.left_child.left_child is None
+
+def test_can_check_nullable():
+    # Arrange
+    regex = Regex("a@(a|b)*@b@#")
+    tree = regex.sintax_tree()
+    # Act
+    nullable = tree.left_child.left_child.right_child.nullable()
+    not_nullable = tree.left_child.left_child.right_child.middle_child.left_child.nullable()
+    # Assert
+    assert nullable
+    assert not not_nullable

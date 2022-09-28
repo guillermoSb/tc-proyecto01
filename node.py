@@ -8,3 +8,13 @@ class Node:
             self.left_child = left_child
             self.right_child = right_child
         self.value = value
+
+    def nullable(self):
+        # A node is nullable if
+        # It is an union and one of the children is nullable
+        if self.value == "|" and (self.left_child.nullable() or self.right_child.nullable()): return True
+        # It is a star
+        if self.value == "*": return True
+        # It is a concatenation and all the children are null
+        if self.value == "@" and self.left_child.nullable() and self.right_child.nullable(): return True
+        return False
