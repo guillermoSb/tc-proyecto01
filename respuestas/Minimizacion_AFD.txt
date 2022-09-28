@@ -1,5 +1,5 @@
 ESTADOS = ['S3', 'S4']
-SIMBOLOS = ['a', 'b', '&']
+SIMBOLOS = ['a', 'b']
 INICIO = []
 ACEPTACION = ['S3']
 TRANSICIONES = [('S3', 'a', 'S4'),

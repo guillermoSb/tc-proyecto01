@@ -373,6 +373,12 @@ class Automata:
             if self.start[0] in v:
                 newStart.append(k)
 
+        #Verifying states 
+        newSyms = []
+        for sym in self.symbols:
+            if (sym == '&'): continue 
+            newSyms.append(sym)
+
         # Creating new aceptance list
         newAcceptance = []
         for element in self.acceptance:
@@ -408,7 +414,7 @@ class Automata:
         noDuplicatesList = sorted(set(tuple(l) for l in cList))
         newTransitions = noDuplicatesList
 
-        self.writeTxt('respuestas/Minimizacion_AFD.txt', newStates, self.symbols, newStart, newAcceptance,
+        self.writeTxt('respuestas/Minimizacion_AFD.txt', newStates, newSyms, newStart, newAcceptance,
                       newTransitions, 'mini', statesD)
 
     def basic_automata(current_status, operand):
