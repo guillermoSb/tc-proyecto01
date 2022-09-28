@@ -224,3 +224,22 @@ def test_can_simulate_afn_4():
     result = automataFromRegex.simulate_afd("babbaaaaa")
     # Assert
     assert result
+
+def test_can_create_syntax_tree():
+    # Arrange
+    regex = Regex("a@(a|b)*@b@#")
+    # Act
+    tree = regex.sintax_tree()
+    # Assert
+    assert tree.right_child.value == "#"
+    assert tree.left_child.value == '@'
+    assert tree.left_child.right_child.value == 'b'
+    assert tree.left_child.left_child.value == "@"
+    assert tree.left_child.left_child.right_child.value == "*"
+    assert tree.left_child.left_child.right_child.single_child
+    assert tree.left_child.left_child.right_child.middle_child.value == "|"
+    assert tree.left_child.left_child.right_child.middle_child.left_child.value == "a"
+    assert tree.left_child.left_child.right_child.middle_child.right_child.value == "b"
+    assert tree.left_child.left_child.left_child.value == "a"
+    assert tree.left_child.left_child.left_child.right_child is None
+    assert tree.left_child.left_child.left_child.left_child is None

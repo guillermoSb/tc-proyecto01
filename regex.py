@@ -1,4 +1,4 @@
-
+from node import Node
 
 
 class Regex:
@@ -39,3 +39,33 @@ class Regex:
         while len(operator_stack) > 0:
             output_queue += operator_stack.pop(0)
         return output_queue
+
+    def sintax_tree(self):
+        posfix = self.toPosfix()
+        tree_stack = [] # Stack to keep the operations
+        for item in posfix:
+            if item not in ["*", "@", "|"]:
+                # It is a character, append to the tree_stack
+                tree_stack.insert(0, item)
+            elif item in ["*", "@", "|"]:
+                if item in ["@", "|"]:
+                    rightOperand = tree_stack.pop(0)
+                    leftOperand = tree_stack.pop(0)
+                    # Create the nodes if the item is a character
+                    if not isinstance(leftOperand, Node):
+                        leftOperand = Node(value=leftOperand, right_child=None, left_child=None)
+                    if not isinstance(rightOperand, Node):
+                        rightOperand = Node(value=rightOperand, right_child=None, left_child=None)
+
+                    new_node = Node(left_child=leftOperand, right_child=rightOperand, value=item)
+                else:
+                    # It is a * only has one middle child
+                    operand = tree_stack.pop(0)
+                    # Create the nodes if the item is a character
+                    if not isinstance(operand, Node):
+                        operand = Node(operand, value=rightOperand)
+                    new_node = Node(middle_child=operand,value=item, left_child=None, right_child=None)
+                # Add the new node to the tree stack
+                tree_stack.insert(0, new_node)
+        return tree_stack[0]
+
