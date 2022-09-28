@@ -274,9 +274,8 @@ class Automata:
     def grouping(self, subGroups, nonAccepting, symbols, transitions):
 
         newGroups = []
-        states = [j for i in nonAccepting for j in i]
 
-        dict = {key: [] for key in states}
+        dict = {key: [] for key in nonAccepting}
 
         for group in subGroups:
             if len(group) == 1: continue
@@ -328,6 +327,7 @@ class Automata:
             newVal = int(lastSVal) + indx + 1
             newState = 'S' + str(newVal)
             newSD[newState] = newSD.pop(indx)
+            # newSD[chr(ord(self.states[-1])+indx+1)] = newSD.pop(indx)
 
         return newSD
 
@@ -571,10 +571,10 @@ class Automata:
         return False
 
 #
-# x = Automata(states=["0", "1", "2", "3", "4", "5", "6", "7"], symbols=["a", "b", "&"], start=["0"], acceptance=["7"],
-#              transitions=[("0", "&", "1"), ("0", "&", "4"), ("1", "a", "2"), ("1", "&", "3"), ("2", "a", "3"),
-#                           ("3", "&", "7"), ("7", "&", "0"), ("4", "b", "5"), ("4", "&", "6"), ("5", "b", "6"),
-#                           ("6", "&", "7")])
+x = Automata(states=["0", "1", "2", "3", "4", "5", "6", "7"], symbols=["a", "b", "&"], start=["0"], acceptance=["7"],
+             transitions=[("0", "&", "1"), ("0", "&", "4"), ("1", "a", "2"), ("1", "&", "3"), ("2", "a", "3"),
+                          ("3", "&", "7"), ("7", "&", "0"), ("4", "b", "5"), ("4", "&", "6"), ("5", "b", "6"),
+                          ("6", "&", "7")])
 # y = Automata(states=["A", "B", "C", "D", "E"], symbols=["a", "b"], start=["A"], acceptance=["E"],
 #              transitions=[("A", "a", "B"), ("A", "b", "C"), ("B", "a", "B"), ("B", "b", "D"), ("C", "a", "B"),
 #                           ("C", "b", "C"), ("D", "a", "B"), ("D", "b", "E"), ("E", "a", "B"), ("E", "b", "C")])
@@ -583,11 +583,11 @@ class Automata:
 #                           ("C", "1", "C"), ("D", "0", "C"), ("D", "1", "G"), ("E", "0", "H"), ("E", "1", "F"),
 #                           ("F", "0", "C"), ("F", "1", "G"), ("G", "0", "G"), ("G", "1", "E"), ("H", "0", "G"),
 #                           ("H", "1", "C")])
-# k = Automata(states=["A", "B", "C", "D", "E", "F", "G", "H"], symbols=["a", "b"], start=["A"], acceptance=["C", "H"],
-#              transitions=[("A", "a", "B"), ("A", "b", "E"), ("B", "a", "F"), ("B", "b", "C"), ("C", "a", "D"),
-#                           ("C", "b", "G"), ("D", "a", "D"), ("D", "b", "D"), ("E", "a", "B"), ("E", "b", "E"),
-#                           ("F", "a", "B"), ("F", "b", "E"), ("G", "a", "D"), ("G", "b", "H"), ("H", "a", "D"),
-#                           ("H", "b", "G")])
+k = Automata(states=["A", "B", "C", "D", "E", "F", "G", "H"], symbols=["a", "b"], start=["A"], acceptance=["C", "H"],
+             transitions=[("A", "a", "B"), ("A", "b", "E"), ("B", "a", "F"), ("B", "b", "C"), ("C", "a", "D"),
+                          ("C", "b", "G"), ("D", "a", "D"), ("D", "b", "D"), ("E", "a", "B"), ("E", "b", "E"),
+                          ("F", "a", "B"), ("F", "b", "E"), ("G", "a", "D"), ("G", "b", "H"), ("H", "a", "D"),
+                          ("H", "b", "G")])
 #
 # expectedAutomata = Automata(
 #         states=['9', '10', '0', '1', '2', '3', '4', '5', '7', '8'],
@@ -603,10 +603,12 @@ regex = Regex("a@(a|b)*")
 automataFromRegex = Automata.fromRegex(regex)
 # Act
 # Act
+k.toAFD()
 #automataFromRegex.toAFD()
-result = automataFromRegex.simulate_afn("abaaabbb")
+# result = automataFromRegex.simulate_afn("abaaabbb")
 #result = automataFromRegex.simulate_afd("babbbaaaaab")
 # Assert
-print(result)
+# print(result)
 
 
+k.minimizeAFD(k.partition())
