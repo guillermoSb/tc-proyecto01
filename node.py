@@ -1,13 +1,15 @@
 class Node:
-    def __init__(self, left_child, right_child,value, middle_child = None):
+    def __init__(self, left_child, right_child,value, middle_child = None, position = None):
         # In the case that the node only has a middle child assign a boolean to make the calculations easier
         if middle_child is not None:
             self.single_child = True
             self.middle_child = middle_child
         else:
+            self.single_child = False
             self.left_child = left_child
             self.right_child = right_child
         self.value = value
+        self.position = position
 
     def nullable(self):
         # A node is nullable if

@@ -43,6 +43,7 @@ class Regex:
     def sintax_tree(self):
         posfix = self.toPosfix()
         tree_stack = [] # Stack to keep the operations
+        position = 1
         for item in posfix:
             if item not in ["*", "@", "|"]:
                 # It is a character, append to the tree_stack
@@ -53,17 +54,19 @@ class Regex:
                     leftOperand = tree_stack.pop(0)
                     # Create the nodes if the item is a character
                     if not isinstance(leftOperand, Node):
-                        leftOperand = Node(value=leftOperand, right_child=None, left_child=None)
+                        leftOperand = Node(value=leftOperand, right_child=None, left_child=None, position=position)
+                        position += 1
                     if not isinstance(rightOperand, Node):
-                        rightOperand = Node(value=rightOperand, right_child=None, left_child=None)
-
+                        rightOperand = Node(value=rightOperand, right_child=None, left_child=None, position=position)
+                        position += 1
                     new_node = Node(left_child=leftOperand, right_child=rightOperand, value=item)
                 else:
                     # It is a * only has one middle child
                     operand = tree_stack.pop(0)
                     # Create the nodes if the item is a character
                     if not isinstance(operand, Node):
-                        operand = Node(operand, value=rightOperand)
+                        operand = Node(operand, value=rightOperand, position=position)
+                        position += 1
                     new_node = Node(middle_child=operand,value=item, left_child=None, right_child=None)
                 # Add the new node to the tree stack
                 tree_stack.insert(0, new_node)

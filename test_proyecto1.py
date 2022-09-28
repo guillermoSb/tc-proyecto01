@@ -254,3 +254,36 @@ def test_can_check_nullable():
     # Assert
     assert nullable
     assert not not_nullable
+
+def test_can_create_syntax_tree_2():
+    # Arrange
+    regex = Regex("(a|b)*@a@b@b@#")
+    # Act
+    tree = regex.sintax_tree()
+    # Assert
+    assert tree.right_child.value == "#"
+    assert tree.right_child.position == 6
+    assert tree.left_child.value == "@"
+    assert tree.left_child.right_child.value == "b"
+    assert tree.left_child.right_child.position == 5
+    assert tree.left_child.left_child.value == "@"
+    assert tree.left_child.left_child.right_child.value == "b"
+    assert tree.left_child.left_child.right_child.position == 4
+    assert tree.left_child.left_child.left_child.value == "@"
+    assert tree.left_child.left_child.left_child.right_child.value == "a"
+    assert tree.left_child.left_child.left_child.right_child.position == 3
+    assert tree.left_child.left_child.left_child.left_child.value == "*"
+    assert tree.left_child.left_child.left_child.left_child.middle_child.value == "|"
+    assert tree.left_child.left_child.left_child.left_child.middle_child.left_child.value == "a"
+    assert tree.left_child.left_child.left_child.left_child.middle_child.left_child.position == 1
+    assert tree.left_child.left_child.left_child.left_child.middle_child.right_child.value == "b"
+    assert tree.left_child.left_child.left_child.left_child.middle_child.right_child.position == 2
+
+def test_can_create_firstpos_lastpos():
+    # Arrange
+    regex = Regex("(a|b)*@a@b@b@#")
+    # Act
+    tree = regex.sintax_tree()
+    # Assert
+    assert tree.first_pos == [1,2,3]
+    assert tree.last_pos == [6]
