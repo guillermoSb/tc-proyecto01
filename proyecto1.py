@@ -370,7 +370,7 @@ class Automata:
         # Replacing by new start state
         newStart = []  # Creating new start list
         for k, v in statesD.items():
-            if self.start[0] in v:
+            if self.start in v:
                 newStart.append(k)
 
         #Verifying states 
@@ -586,14 +586,14 @@ x = Automata(states=["0", "1", "2", "3", "4", "5", "6", "7"], symbols=["a", "b",
              transitions=[("0", "&", "1"), ("0", "&", "4"), ("1", "a", "2"), ("1", "&", "3"), ("2", "a", "3"),
                           ("3", "&", "7"), ("7", "&", "0"), ("4", "b", "5"), ("4", "&", "6"), ("5", "b", "6"),
                           ("6", "&", "7")])
-# y = Automata(states=["A", "B", "C", "D", "E"], symbols=["a", "b"], start=["A"], acceptance=["E"],
-#              transitions=[("A", "a", "B"), ("A", "b", "C"), ("B", "a", "B"), ("B", "b", "D"), ("C", "a", "B"),
-#                           ("C", "b", "C"), ("D", "a", "B"), ("D", "b", "E"), ("E", "a", "B"), ("E", "b", "C")])
-# z = Automata(states=["A", "B", "C", "D", "E", "F", "G", "H"], symbols=["0", "1"], start=["A"], acceptance=["C"],
-#              transitions=[("A", "0", "B"), ("A", "1", "F"), ("B", "0", "G"), ("B", "1", "C"), ("C", "0", "A"),
-#                           ("C", "1", "C"), ("D", "0", "C"), ("D", "1", "G"), ("E", "0", "H"), ("E", "1", "F"),
-#                           ("F", "0", "C"), ("F", "1", "G"), ("G", "0", "G"), ("G", "1", "E"), ("H", "0", "G"),
-#                           ("H", "1", "C")])
+y = Automata(states=["A", "B", "C", "D", "E"], symbols=["a", "b"], start=["A"], acceptance=["E"],
+             transitions=[("A", "a", "B"), ("A", "b", "C"), ("B", "a", "B"), ("B", "b", "D"), ("C", "a", "B"),
+                          ("C", "b", "C"), ("D", "a", "B"), ("D", "b", "E"), ("E", "a", "B"), ("E", "b", "C")])
+z = Automata(states=["A", "B", "C", "D", "E", "F", "G", "H"], symbols=["0", "1"], start=["A"], acceptance=["C"],
+             transitions=[("A", "0", "B"), ("A", "1", "F"), ("B", "0", "G"), ("B", "1", "C"), ("C", "0", "A"),
+                          ("C", "1", "C"), ("D", "0", "C"), ("D", "1", "G"), ("E", "0", "H"), ("E", "1", "F"),
+                          ("F", "0", "C"), ("F", "1", "G"), ("G", "0", "G"), ("G", "1", "E"), ("H", "0", "G"),
+                          ("H", "1", "C")])
 k = Automata(states=["A", "B", "C", "D", "E", "F", "G", "H"], symbols=["a", "b"], start=["A"], acceptance=["C", "H"],
              transitions=[("A", "a", "B"), ("A", "b", "E"), ("B", "a", "F"), ("B", "b", "C"), ("C", "a", "D"),
                           ("C", "b", "G"), ("D", "a", "D"), ("D", "b", "D"), ("E", "a", "B"), ("E", "b", "E"),
@@ -614,7 +614,7 @@ regex = Regex("a@(a|b)*")
 automataFromRegex = Automata.fromRegex(regex)
 # Act
 # Act
-x.toAFD()
+k.toAFD()
 #automataFromRegex.toAFD()
 # result = automataFromRegex.simulate_afn("abaaabbb")
 #result = automataFromRegex.simulate_afd("babbbaaaaab")
@@ -622,6 +622,6 @@ x.toAFD()
 # print(result)
 
 
-x.minimizeAFD(x.partition())
+k.minimizeAFD(k.partition())
 
 # x.partition()
