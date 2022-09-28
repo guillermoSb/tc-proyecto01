@@ -225,6 +225,9 @@ class Automata:
         self.states = newStates
         self.transitions = newTransitions
 
+        self.writeTxt('respuestas/Conversion_AFN_AFD.txt', self.states, self.symbols, self.start, self.acceptance,
+                      self.transitions, 'conversion')
+
 
     def modifyStateStructure(self):
         prefix = 'S'
@@ -274,15 +277,16 @@ class Automata:
     def grouping(self, subGroups, nonAccepting, symbols, transitions):
 
         newGroups = []
-        states = [j for i in nonAccepting for j in i]
 
-        dict = {key: [] for key in states}
+        dict = {key: [] for key in nonAccepting}
 
         for group in subGroups:
+            # print(group)
             if len(group) == 1: continue
             for indx in range(len(group)):
                 for sym in symbols:
                     for t in transitions:
+                        # if(t[2] == None): continue
                         if group[indx] == t[0] and sym == t[1]:
                             if t[2] in group and group[indx] in dict.keys():
                                 dict[group[indx]] += [subGroups.index(group)]
@@ -328,6 +332,7 @@ class Automata:
             newVal = int(lastSVal) + indx + 1
             newState = 'S' + str(newVal)
             newSD[newState] = newSD.pop(indx)
+            # newSD[chr(ord(self.states[-1])+indx+1)] = newSD.pop(indx)
 
         return newSD
 
@@ -368,8 +373,14 @@ class Automata:
         # Replacing by new start state
         newStart = []  # Creating new start list
         for k, v in statesD.items():
-            if self.start[0] in v:
+            if self.start in v:
                 newStart.append(k)
+
+        #Verifying states 
+        newSyms = []
+        for sym in self.symbols:
+            if (sym == '&'): continue 
+            newSyms.append(sym)
 
         # Creating new aceptance list
         newAcceptance = []
@@ -386,6 +397,7 @@ class Automata:
         # Creating new transition list
         newTransitions = []
         for element in self.transitions:
+            if(element[2] == None): continue
             newTransitions.append(element)
 
         # Converting lists to tuples
@@ -395,15 +407,17 @@ class Automata:
         for transition in cList:
             for k, v in statesD.items():
                 if transition[0] in v:
+                    if transition[2] == None: continue
                     transition[0] = k
                 if transition[2] in v:
+                    if transition[2] == None: continue
                     transition[2] = k
 
         # Removing duplicates
         noDuplicatesList = sorted(set(tuple(l) for l in cList))
         newTransitions = noDuplicatesList
 
-        self.writeTxt('respuestas/Minimizacion_AFD.txt', newStates, self.symbols, newStart, newAcceptance,
+        self.writeTxt('respuestas/Minimizacion_AFD.txt', newStates, newSyms, newStart, newAcceptance,
                       newTransitions, 'mini', statesD)
 
     def basic_automata(current_status, operand):
@@ -508,6 +522,9 @@ class Automata:
                     stack.insert(0, result_automata)
                     current_status += 1
 
+        stack[0].writeTxt('respuestas/FromRegex_To_AFN.txt', stack[0].states, stack[0].symbols, stack[0].start, stack[0].acceptance,
+                      stack[0].transitions, 'FromRegex_To_AFN')
+
         return stack[0]
 
     def e_closure(self, state):
@@ -543,12 +560,19 @@ class Automata:
         state = self.start
         for char in word:
             # Find a possible transition
+            if char not in self.symbols:
+                return False
+            flag = False
             for t in self.transitions:
                 if t[0] == state and t[1] == char and t[2] is not None:
                     # found a transition - go to the next state
+                    print(t)
                     state = t[2]
+                    flag = True
                     break
-    
+
+            if flag == False:
+                return False
         if self.acceptance.count(state) > 0:
             acceptance = True
 
@@ -565,23 +589,23 @@ class Automata:
         return False
 
 #
-# x = Automata(states=["0", "1", "2", "3", "4", "5", "6", "7"], symbols=["a", "b", "&"], start=["0"], acceptance=["7"],
-#              transitions=[("0", "&", "1"), ("0", "&", "4"), ("1", "a", "2"), ("1", "&", "3"), ("2", "a", "3"),
-#                           ("3", "&", "7"), ("7", "&", "0"), ("4", "b", "5"), ("4", "&", "6"), ("5", "b", "6"),
-#                           ("6", "&", "7")])
-# y = Automata(states=["A", "B", "C", "D", "E"], symbols=["a", "b"], start=["A"], acceptance=["E"],
-#              transitions=[("A", "a", "B"), ("A", "b", "C"), ("B", "a", "B"), ("B", "b", "D"), ("C", "a", "B"),
-#                           ("C", "b", "C"), ("D", "a", "B"), ("D", "b", "E"), ("E", "a", "B"), ("E", "b", "C")])
-# z = Automata(states=["A", "B", "C", "D", "E", "F", "G", "H"], symbols=["0", "1"], start=["A"], acceptance=["C"],
-#              transitions=[("A", "0", "B"), ("A", "1", "F"), ("B", "0", "G"), ("B", "1", "C"), ("C", "0", "A"),
-#                           ("C", "1", "C"), ("D", "0", "C"), ("D", "1", "G"), ("E", "0", "H"), ("E", "1", "F"),
-#                           ("F", "0", "C"), ("F", "1", "G"), ("G", "0", "G"), ("G", "1", "E"), ("H", "0", "G"),
-#                           ("H", "1", "C")])
-# k = Automata(states=["A", "B", "C", "D", "E", "F", "G", "H"], symbols=["a", "b"], start=["A"], acceptance=["C", "H"],
-#              transitions=[("A", "a", "B"), ("A", "b", "E"), ("B", "a", "F"), ("B", "b", "C"), ("C", "a", "D"),
-#                           ("C", "b", "G"), ("D", "a", "D"), ("D", "b", "D"), ("E", "a", "B"), ("E", "b", "E"),
-#                           ("F", "a", "B"), ("F", "b", "E"), ("G", "a", "D"), ("G", "b", "H"), ("H", "a", "D"),
-#                           ("H", "b", "G")])
+x = Automata(states=["0", "1", "2", "3", "4", "5", "6", "7"], symbols=["a", "b", "&"], start=["0"], acceptance=["7"],
+             transitions=[("0", "&", "1"), ("0", "&", "4"), ("1", "a", "2"), ("1", "&", "3"), ("2", "a", "3"),
+                          ("3", "&", "7"), ("7", "&", "0"), ("4", "b", "5"), ("4", "&", "6"), ("5", "b", "6"),
+                          ("6", "&", "7")])
+y = Automata(states=["A", "B", "C", "D", "E"], symbols=["a", "b"], start=["A"], acceptance=["E"],
+             transitions=[("A", "a", "B"), ("A", "b", "C"), ("B", "a", "B"), ("B", "b", "D"), ("C", "a", "B"),
+                          ("C", "b", "C"), ("D", "a", "B"), ("D", "b", "E"), ("E", "a", "B"), ("E", "b", "C")])
+z = Automata(states=["A", "B", "C", "D", "E", "F", "G", "H"], symbols=["0", "1"], start=["A"], acceptance=["C"],
+             transitions=[("A", "0", "B"), ("A", "1", "F"), ("B", "0", "G"), ("B", "1", "C"), ("C", "0", "A"),
+                          ("C", "1", "C"), ("D", "0", "C"), ("D", "1", "G"), ("E", "0", "H"), ("E", "1", "F"),
+                          ("F", "0", "C"), ("F", "1", "G"), ("G", "0", "G"), ("G", "1", "E"), ("H", "0", "G"),
+                          ("H", "1", "C")])
+k = Automata(states=["A", "B", "C", "D", "E", "F", "G", "H"], symbols=["a", "b"], start=["A"], acceptance=["C", "H"],
+             transitions=[("A", "a", "B"), ("A", "b", "E"), ("B", "a", "F"), ("B", "b", "C"), ("C", "a", "D"),
+                          ("C", "b", "G"), ("D", "a", "D"), ("D", "b", "D"), ("E", "a", "B"), ("E", "b", "E"),
+                          ("F", "a", "B"), ("F", "b", "E"), ("G", "a", "D"), ("G", "b", "H"), ("H", "a", "D"),
+                          ("H", "b", "G")])
 #
 # expectedAutomata = Automata(
 #         states=['9', '10', '0', '1', '2', '3', '4', '5', '7', '8'],
@@ -594,8 +618,20 @@ class Automata:
 #     )
 
 
+regex = Regex("a@(a|b)*")
+automataFromRegex = Automata.fromRegex(regex)
+automataFromRegex.toAFD()
+# Act
+# Act
+k.toAFD()
+#automataFromRegex.toAFD()
+result = automataFromRegex.simulate_afd("abaaabbb")
+#result = automataFromRegex.simulate_afd("babbbaaaaab")
+# Assert
+# print(result)
 
 
 
+k.minimizeAFD(k.partition())
 
-
+# x.partition()
