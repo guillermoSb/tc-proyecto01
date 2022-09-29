@@ -306,6 +306,9 @@ class Automata:
 
             index += 1
 
+    """
+    Funcion que se encarga de realizar o partir los grupos dependiendo a cual correspondan.
+    """
     def setMaker(self, dict):
 
         statesSets, u_vals = [], []
@@ -327,19 +330,21 @@ class Automata:
 
         return result
 
+
+    """
+    Esta funcion tiene el objetivo de realizar de establecer a que grupo corresponde cada estado y con ello poder hacer la
+    particion de grupos posteriormente.
+    """
     def grouping(self, subGroups, nonAccepting, symbols, transitions):
 
         newGroups = []
-
         dict = {key: [] for key in nonAccepting}
 
         for group in subGroups:
-            # print(group)
             if len(group) == 1: continue
             for indx in range(len(group)):
                 for sym in symbols:
                     for t in transitions:
-                        # if(t[2] == None): continue
                         if group[indx] == t[0] and sym == t[1]:
                             if t[2] in group and group[indx] in dict.keys():
                                 dict[group[indx]] += [subGroups.index(group)]
@@ -358,6 +363,11 @@ class Automata:
 
         return newGroups
 
+
+    """
+    Esta funcion se encarga de hacer la particion de grupos hasta que se cumpla condicion en la cual la particion de grupos
+    no tenga ningún cambio y para el while loop. Obteniendo de esta forma la particion de grupos.
+    """
     def partition(self):
         # Start with initial partition accepting and non-accepting states
         accepting = self.acceptance
@@ -385,10 +395,12 @@ class Automata:
             newVal = int(lastSVal) + indx + 1
             newState = 'S' + str(newVal)
             newSD[newState] = newSD.pop(indx)
-            # newSD[chr(ord(self.states[-1])+indx+1)] = newSD.pop(indx)
-
         return newSD
 
+
+    """
+    Funcion para escribir archivos de texto con las respuestas.
+    """
     def writeTxt(self, fileName, states, symbols, start, accepting, transitions, type, dict={}):
         f = open(fileName, "w+")
         f.write("ESTADOS = " + str(states) + '\n')
