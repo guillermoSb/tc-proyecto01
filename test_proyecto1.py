@@ -224,3 +224,89 @@ def test_can_simulate_afn_4():
     result = automataFromRegex.simulate_afd("babbaaaaa")
     # Assert
     assert result
+
+def test_can_create_syntax_tree():
+    # Arrange
+    regex = Regex("a@(a|b)*@b@#")
+    # Act
+    tree = regex.sintax_tree()
+    # Assert
+    assert tree.right_child.value == "#"
+    assert tree.left_child.value == '@'
+    assert tree.left_child.right_child.value == 'b'
+    assert tree.left_child.left_child.value == "@"
+    assert tree.left_child.left_child.right_child.value == "*"
+    assert tree.left_child.left_child.right_child.single_child
+    assert tree.left_child.left_child.right_child.middle_child.value == "|"
+    assert tree.left_child.left_child.right_child.middle_child.left_child.value == "a"
+    assert tree.left_child.left_child.right_child.middle_child.right_child.value == "b"
+    assert tree.left_child.left_child.left_child.value == "a"
+    assert tree.left_child.left_child.left_child.right_child is None
+    assert tree.left_child.left_child.left_child.left_child is None
+
+def test_can_check_nullable():
+    # Arrange
+    regex = Regex("a@(a|b)*@b@#")
+    tree = regex.sintax_tree()
+    # Act
+    nullable = tree.left_child.left_child.right_child.nullable()
+    not_nullable = tree.left_child.left_child.right_child.middle_child.left_child.nullable()
+    # Assert
+    assert nullable
+    assert not not_nullable
+
+def test_can_create_syntax_tree_2():
+    # Arrange
+    regex = Regex("(a|b)*@a@b@b@#")
+    # Act
+    tree = regex.sintax_tree()
+    # Assert
+    assert tree.right_child.value == "#"
+    assert tree.right_child.position == 6
+    assert tree.left_child.value == "@"
+    assert tree.left_child.right_child.value == "b"
+    assert tree.left_child.right_child.position == 5
+    assert tree.left_child.left_child.value == "@"
+    assert tree.left_child.left_child.right_child.value == "b"
+    assert tree.left_child.left_child.right_child.position == 4
+    assert tree.left_child.left_child.left_child.value == "@"
+    assert tree.left_child.left_child.left_child.right_child.value == "a"
+    assert tree.left_child.left_child.left_child.right_child.position == 3
+    assert tree.left_child.left_child.left_child.left_child.value == "*"
+    assert tree.left_child.left_child.left_child.left_child.middle_child.value == "|"
+    assert tree.left_child.left_child.left_child.left_child.middle_child.left_child.value == "a"
+    assert tree.left_child.left_child.left_child.left_child.middle_child.left_child.position == 1
+    assert tree.left_child.left_child.left_child.left_child.middle_child.right_child.value == "b"
+    assert tree.left_child.left_child.left_child.left_child.middle_child.right_child.position == 2
+
+def test_can_create_firstpos_lastpos():
+    # Arrange
+    regex = Regex("(a|b)*@a@b@b@#")
+    # Act
+    tree = regex.sintax_tree()
+    # Assert
+    assert tree.first_pos == [1,2,3]
+    assert tree.last_pos == [6]
+
+    assert tree.left_child.left_child.first_pos == [1,2,3]
+    assert tree.left_child.left_child.last_pos == [4]
+    assert tree.left_child.left_child.right_child.first_pos == [4]
+    assert tree.left_child.left_child.right_child.last_pos == [4]
+
+    assert tree.left_child.left_child.left_child.first_pos == [1, 2, 3]
+    assert tree.left_child.left_child.left_child.last_pos == [3]
+    assert tree.left_child.left_child.left_child.right_child.first_pos == [3]
+    assert tree.left_child.left_child.left_child.right_child.last_pos == [3]
+
+    assert tree.left_child.left_child.left_child.left_child.first_pos == [1,2]
+    assert tree.left_child.left_child.left_child.left_child.last_pos == [1, 2]
+
+    assert tree.left_child.left_child.left_child.left_child.middle_child.first_pos == [1, 2]
+    assert tree.left_child.left_child.left_child.left_child.middle_child.last_pos == [1, 2]
+
+    assert tree.left_child.left_child.left_child.left_child.middle_child.right_child.first_pos == [2]
+    assert tree.left_child.left_child.left_child.left_child.middle_child.right_child.last_pos == [2]
+    assert tree.left_child.left_child.left_child.left_child.middle_child.left_child.first_pos == [1]
+    assert tree.left_child.left_child.left_child.left_child.middle_child.left_child.last_pos == [1]
+
+
