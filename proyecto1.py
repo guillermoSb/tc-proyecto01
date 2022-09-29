@@ -748,5 +748,4 @@ automataFromRegex.toAFD()
 print(automataFromRegex.simulate_afd('aaaabaaaabababab'))
 
 # automataFromRegex.minimizeAFD(automataFromRegex.partition())
->>>>>>> 5f7ac32aa0ed2562474fd584e29671868bd28f5b
 
