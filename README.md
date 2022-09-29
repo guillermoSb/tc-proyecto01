@@ -14,6 +14,7 @@
 - `regex.py` Clase regex encargada de:
   - Convertir una regex a notación Posfix.
 - `test_proyecto1.py` Pruebas unitarias
+- `node.py` Clase encargada de definir la estructura de un Nodo para la elaboración de el árbol sintáctico.
 - `proyecto1.py` Archivo principal
 
 ## Ejecutar el programa
