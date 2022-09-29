@@ -19,21 +19,6 @@ k = Automata(states=["A", "B", "C", "D", "E", "F", "G", "H"], symbols=["a", "b"]
                           ("F", "a", "B"), ("F", "b", "E"), ("G", "a", "D"), ("G", "b", "H"), ("H", "a", "D"),
                           ("H", "b", "G")])
 
-# Si existe un automata
-# 2. Convertir a AFD
-    # automataFromRegex.toAFD()
-    # exportar archivo
-# 3. Minimizar AFD
-    # Llamar metodo de minimizar y exportar archivo
-# 4. Simular AFN
-# Pedir cadena a simular: aaasdf
-# Imprimir true o false si la cadena si es aceptada
-#automataFromRegex.simulate_afn(aaasdf)
-# 5. Simular AFD
-# Pedir cadena a simular: aaasdf
-# automataFromRegex.simulate_afd(aaasdf)
-# Imprimir true o false si la cadena si es aceptada
-
 
 def menu():
     print('\nOpciones:\n1. Ingresar regex\
@@ -95,10 +80,5 @@ def options():
 
 
 options()
-
-regex = Regex('a@b*@c@f@d@d@d@d*')
-automataFromRegex = Automata.fromRegex(regex)
-automataFromRegex.toAFD()
-print(automataFromRegex.simulate_afd('abbbbbcfdddddddd'))
 
 
