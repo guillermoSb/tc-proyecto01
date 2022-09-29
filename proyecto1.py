@@ -21,47 +21,6 @@ k = Automata(states=["A", "B", "C", "D", "E", "F", "G", "H"], symbols=["a", "b"]
                           ("C", "b", "G"), ("D", "a", "D"), ("D", "b", "D"), ("E", "a", "B"), ("E", "b", "E"),
                           ("F", "a", "B"), ("F", "b", "E"), ("G", "a", "D"), ("G", "b", "H"), ("H", "a", "D"),
                           ("H", "b", "G")])
-#
-# expectedAutomata = Automata(
-#         states=['9', '10', '0', '1', '2', '3', '4', '5', '7', '8'],
-#         symbols=["a", "b", "&"],
-#         start=["9"],
-#         acceptance=["8"],
-#         transitions=[('9', 'a', '10'), ('0', 'a', '1'), ('2', 'b', '3'), ('4', '&', '0'), ('4', '&', '2'),
-#                      ('1', '&', '5'), ('3', '&', '5'), ('5', '&', '4'), ('7', '&', '8'), ('7', '&', '4'),
-#                      ('5', '&', '8'), ('10', '&', '7')]
-#     )
-
-
-# Act
-
-# z.toAFD()
-# z.minimizeAFD(z.partition())
-
-#automataFromRegex.toAFD()
-
-# result = automataFromRegex.simulate_afd("abaaabbb")
-
-#result = automataFromRegex.simulate_afd("babbbaaaaab")
-# Assert
-# print(result)
-# x.partition()
-
-
-# Si existe un automata
-# 2. Convertir a AFD
-    # automataFromRegex.toAFD()
-    # exportar archivo
-# 3. Minimizar AFD
-    # Llamar metodo de minimizar y exportar archivo
-# 4. Simular AFN
-# Pedir cadena a simular: aaasdf
-# Imprimir true o false si la cadena si es aceptada
-#automataFromRegex.simulate_afn(aaasdf)
-# 5. Simular AFD
-# Pedir cadena a simular: aaasdf
-# automataFromRegex.simulate_afd(aaasdf)
-# Imprimir true o false si la cadena si es aceptada
 
 
 def menu():
@@ -125,18 +84,4 @@ def options():
 
 options()
 
-# options()
-
-# regex = Regex(regex)
-
-
-# k.minimizeAFD(k.partition())
-
-
-regex = Regex('a@(a|b)*@b@a@b@(a|b)*@(a|b)*@(a|b)*')
-automataFromRegex = Automata.fromRegex(regex)
-automataFromRegex.toAFD()
-print(automataFromRegex.simulate_afd('aaaaaaaabababababababbbbbb'))
-
-# automataFromRegex.minimizeAFD(automataFromRegex.partition())
 
