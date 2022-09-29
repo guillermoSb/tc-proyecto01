@@ -23,6 +23,11 @@ class Automata:
         self.createMatrix()
         #self.toAFD()
 
+
+    """
+    Esta funcion fue disenada para determinar el la matriz que se utilizara posteriormente para algunos calculos
+    de la conversion de AFN a AFD.. Cabe mencionar que genera una matriz cubica estados x estados x simbolos
+    """
     def createMatrix(self):
         self.matrix = [[[0 for _ in range(len(self.symbols))] for _ in range(len(self.states))] for _ in
                        range(len(self.states))]
@@ -32,6 +37,10 @@ class Automata:
                 self.symbols.index(self.transitions[_][1])] = self.transitions[_][1]
     
 
+    """
+    Esta funcion en otras ocasiones tambien es llamada e-closure, la cual tiene como objetivo reunir el alcance
+    de todos los estados que tiene un estado con epsilon.
+    """
     def find3scope(self, state, transitions=[]):
         if type(state) != list:
             if state not in transitions:
@@ -50,6 +59,9 @@ class Automata:
 
         return transitions
 
+    """
+    Esta funcion tiene como objetivo reunir todos los estados que procede dependiendo del simbolo que se elije.
+    """
     def getState(self, state=[], symbol=None):
         if state == []:
             return []
@@ -89,6 +101,14 @@ class Automata:
         else:
             return None
 
+    """
+    En esta funcion se define el AFD, aqui se llaman a las dos funciones anteriores pues el nuevo AFD debe
+    contener todos los resultados posibles
+
+    El formato en que se almacena es el siguiente
+
+    [  [ Estado/s de Inicio ], [ por cada simbolo se agrega una lista [ contiene todos los estados a los que transiciona con ese simbolo ], ...  ]  ]
+    """
     def defineAFD(self):
         start = [self.start if type(self.start) == list else [self.start], [_ for _ in self.transitionTable[self.states.index(self.start[0])]]]
 
@@ -126,6 +146,10 @@ class Automata:
             if notFound == False:
                 break
 
+
+    """
+    Los procedimientos anteriores generan muchos estados sucios por los que se debe limpiar el AFD
+    """
     def cleanAFD(self):
         # Esta funcion debe limpiar el AFD resultante de las funciones para convertir de AFN a AFD
         index = -1
@@ -134,6 +158,10 @@ class Automata:
         if index != -1:
             self.changeState(index=index)
 
+    """
+    En caso un estado x tenga como unica transicion epsilon, entonces ese epsilon toma el lugar de todos los estados donde se menciona x
+    asi se reducen la cantidad de estados y se eliminan algunos problemas que pueden llegar a ocurrir.
+    """
     def changeState(self, index):
         remove = []
 
@@ -176,6 +204,12 @@ class Automata:
         for x in remove:
             self.AFD.remove(x)
 
+    """
+    Esta es la funcion madre para el sistema de AFN a AFD, aqui se crea la tabla de transiciones, depende completamente de los indices de las listas
+    de los valores de simbolos y estados.
+
+    Tambien se llaman otras funciones como la de defineAFD o modifyStructure, entre otras.
+    """
     def toAFD(self):
         self.transitionTable = [[None for _ in range(len(self.symbols))] for _ in range(len(self.states))]
 
@@ -244,6 +278,10 @@ class Automata:
                       self.transitions, 'conversion')
 
 
+    """
+    Ahora, para trabajar de forma mas ordenada se deben cambiar todos los esados a un mismo formato, en este caso decidimos SX
+    se debe determinar si contiene epsilon o no, pues la forma de trabajar es distinta dependiendo del escenario y luego se
+    """
     def modifyStateStructure(self):
         prefix = 'S'
         index = 0
