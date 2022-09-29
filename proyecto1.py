@@ -52,6 +52,7 @@ class Automata:
                     if _[0] == x and _[1] == "&":
                         if _[2] not in transitions:
                             transitions = self.find3scope(_[2], transitions=transitions)
+
         return transitions
 
     def getState(self, state=[], symbol=None):
@@ -140,26 +141,42 @@ class Automata:
 
     def changeState(self, index):
         remove = []
+
+        for x in self.AFD:
+            for i in self.acceptance:
+                if i in x[0]:
+                    self.AFD.remove(x)
+                    self.AFD.append(x)
         for x in self.AFD:
             flag = False
+            containsAcceptance = False
             for i in x[1]:
                 if i != None and x[1].index(i) != index:
                     flag = True
             if flag == False and x[0] == self.start:
                 self.start = x[1][index]
 
-            if flag == False and x[1][index] != None:
+            for i in self.acceptance:
+                if i in x[0]:
+                    containsAcceptance = True
+
+            if flag == False and x[1][index] != None and containsAcceptance is False:
                 for i in range(len(self.AFD)):
                     for ii in range(len(self.AFD[i][1])):
-                        if type(self.AFD[i][1][ii]) == list and self.AFD[i][1][ii] == x[0]:
-                            self.AFD[i][1][ii] = x[1][index]
-                        elif type(self.AFD[i][1][ii]) != list and [self.AFD[i][1][ii]] == x[0]:
-                            self.AFD[i][1][ii] = x[1][index]
+                        if type(self.AFD[i][1][ii]) == list and sorted(self.AFD[i][1][ii]) == sorted(x[0]):
+                            self.AFD[i][1][ii] = sorted(x[1][index])
+                        elif type(self.AFD[i][1][ii]) != list and sorted([self.AFD[i][1][ii]]) == sorted(x[0]):
+                            self.AFD[i][1][ii] = sorted(x[1][index])
                         else:
                             pass
-
-
                 remove.append(x)
+            if flag == False and x[1][index] != None and containsAcceptance is True:
+                for i in range(len(self.AFD)):
+
+                    if self.AFD[i][0] == x[1][index]:
+                        for ii in range(len(self.symbols)):
+                            self.AFD[self.AFD.index(x)][1][ii] = self.AFD[i][1][ii]
+
 
         for x in remove:
             self.AFD.remove(x)
@@ -194,7 +211,6 @@ class Automata:
                     self.transitionTable[statusIndex][symbolIndex] += endStatus
         #print(self.states)
         self.defineAFD()
-        #for x in self.AFD: print(x)
         self.cleanAFD()
 
         newAcceptance = []
@@ -205,6 +221,8 @@ class Automata:
             for i in self.acceptance:
                 if i in x[0] or i == self.acceptance:
                     newAcceptance.append(x[0])
+
+        #print(self.acceptance, self.AFD)
 
         self.acceptance = newAcceptance
 
@@ -225,6 +243,7 @@ class Automata:
         self.states = newStates
         self.transitions = newTransitions
 
+        for x in self.AFD: print(x)
         print(self.acceptance)
 
         self.writeTxt('respuestas/Conversion_AFN_AFD.txt', self.states, self.symbols, self.start, self.acceptance,
@@ -712,5 +731,22 @@ def options():
         menu()
         option = int(input('Elija una opción: '))
 
+
 options()
+
+# options()
+
+# regex = Regex(regex)
+
+
+# k.minimizeAFD(k.partition())
+
+
+regex = Regex('a@(a|b)*@b')
+automataFromRegex = Automata.fromRegex(regex)
+automataFromRegex.toAFD()
+print(automataFromRegex.simulate_afd('aaaabaaaabababab'))
+
+# automataFromRegex.minimizeAFD(automataFromRegex.partition())
+>>>>>>> 5f7ac32aa0ed2562474fd584e29671868bd28f5b
 
