@@ -5,6 +5,7 @@
 - Para la concatenación se debe de utilizar un caracter `@`. Por ejemplo: ab = a@b
 - La estrella de Kleene utiliza el caracter `*`
 - La unión utiliza el caracter `|`
+- Ejemplo: a@a@a@a@b*@c
 
 ## Estructura del programa
 - `automata.py` Clase autómata encargada de:
