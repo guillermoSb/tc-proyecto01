@@ -213,6 +213,7 @@ class Automata:
         self.defineAFD()
         self.cleanAFD()
 
+
         newAcceptance = []
 
         #print(self.AFD)
@@ -243,8 +244,6 @@ class Automata:
         self.states = newStates
         self.transitions = newTransitions
 
-        for x in self.AFD: print(x)
-        print(self.acceptance)
 
         self.writeTxt('respuestas/Conversion_AFN_AFD.txt', self.states, self.symbols, self.start, self.acceptance,
                       self.transitions, 'conversion')
@@ -263,7 +262,7 @@ class Automata:
 
             for i in range(len(self.AFD)):
                 for ii in range(len(self.AFD[i][1])):
-                    if self.AFD[i][1][ii] == self.AFD[x][0]:
+                    if self.AFD[i][1][ii] is not None and self.AFD[x][0] is not None and sorted(self.AFD[i][1][ii]) == sorted(self.AFD[x][0]):
                         self.AFD[i][1][ii] = prefix + str(index)
 
                     if type(self.AFD[i][1][ii]) != list and len(self.AFD[x][0]) == 1 and self.AFD[i][1][ii] == \
@@ -742,10 +741,10 @@ options()
 # k.minimizeAFD(k.partition())
 
 
-regex = Regex('a@(a|b)*@b')
+regex = Regex('a@(a|b)*@b@a@b@(a|b)*')
 automataFromRegex = Automata.fromRegex(regex)
 automataFromRegex.toAFD()
-print(automataFromRegex.simulate_afd('aaaabaaaabababab'))
+print(automataFromRegex.simulate_afd('aaaaaaaabababababababbbbbb'))
 
 # automataFromRegex.minimizeAFD(automataFromRegex.partition())
 
