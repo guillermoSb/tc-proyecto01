@@ -569,7 +569,7 @@ class Automata:
             for t in self.transitions:
                 if t[0] == state and t[1] == char and t[2] is not None:
                     # found a transition - go to the next state
-                    # print(t)
+                    print(t)
                     state = t[2]
                     flag = True
                     break
@@ -585,8 +585,10 @@ class Automata:
 
     def simulate_afn(self, word):
         s = self.e_closure(self.start[0])
+        print("Estados: ")
         for char in word:
             s = self.e_closures(self.move(s, char))
+            print(s)
         for state in s:
             if self.acceptance.count(state) > 0: return True
         return False
@@ -621,7 +623,6 @@ k = Automata(states=["A", "B", "C", "D", "E", "F", "G", "H"], symbols=["a", "b"]
 #     )
 
 
-# Act
 # Act
 
 # z.toAFD()
@@ -666,9 +667,6 @@ def options():
             regex = str(input('Ingrese cadena regex: '))
             regex = Regex(regex)
             automataFromRegex = Automata.fromRegex(regex)
-            automataFromRegex.writeTxt('respuestas/FromRegex_ToAFN.txt', automataFromRegex.states, automataFromRegex.symbols, automataFromRegex.start, \
-                    automataFromRegex.acceptance, automataFromRegex.transitions, 'genRegex')
-            print('Chequee el archivo "FromRegex_ToAFN" en la carpeta de respuestas')
         
         elif option == 2: 
 
@@ -677,9 +675,6 @@ def options():
             regex = Regex(regex)
             automataFromRegex = Automata.fromRegex(regex)
             automataFromRegex.toAFD()
-            automataFromRegex.writeTxt('respuestas/Conversion_AFD.txt', automataFromRegex.states, automataFromRegex.symbols, automataFromRegex.start, \
-                automataFromRegex.acceptance, automataFromRegex.transitions, 'toAFD')
-            print('Chequee el archivo "Conversión_AFD" en la carpeta de respuestas')
 
         elif option == 3: 
             print('\nMinimización a AFD')
@@ -690,7 +685,7 @@ def options():
             automataFromRegex.minimizeAFD(automataFromRegex.partition())
 
         elif option == 4: 
-            print('\nSimulación AFD')
+            print('\nSimulación AFN')
             regex = str(input('Ingrese cadena regex para generar automata: '))
             regex = Regex(regex)
             regex2 = str(input('Ingrese cadena regex para comprobar si es aceptada: '))
@@ -701,12 +696,13 @@ def options():
                 print('\nLa cadena no es aceptada')
 
         elif option == 5: 
-            print('\nSimulación AFN')
+            print('\nSimulación AFD')
             regex = str(input('Ingrese cadena regex para generar automata: '))
             regex = Regex(regex)
             regex2 = str(input('Ingrese cadena regex para comprobar si es aceptada: '))
             automataFromRegex = Automata.fromRegex(regex)
-            if (automataFromRegex.simulate_afn(regex2)):
+            automataFromRegex.toAFD()
+            if (automataFromRegex.simulate_afd(regex2)):
                 print('\nLa cadena es aceptada')
             else:
                 print('\nLa cadena no es aceptada')
@@ -716,18 +712,5 @@ def options():
         menu()
         option = int(input('Elija una opción: '))
 
-# options()
+options()
 
-# regex = Regex(regex)
-
-
-# k.minimizeAFD(k.partition())
-
-
-regex = Regex('a@(a|b)*@b')
-automataFromRegex = Automata.fromRegex(regex)
-automataFromRegex.toAFD()
-# automataFromRegex.minimizeAFD(automataFromRegex.partition())
-
-# x.toAFD()
-# x.minimizeAFD(x.partition())
