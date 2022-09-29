@@ -64,6 +64,8 @@ class Regex:
                         rightOperand.last_pos = [position]
                         position += 1
                     new_node = Node(left_child=leftOperand, right_child=rightOperand, value=item)
+                    leftOperand.root = new_node
+
                     # If the operator is an union then the first pos is the union of the two childs
                     if item == "|":
                         new_node.first_pos = leftOperand.first_pos + rightOperand.first_pos
@@ -75,6 +77,8 @@ class Regex:
                             new_node.first_pos = new_node.first_pos + rightOperand.first_pos
                         if rightOperand.nullable():
                             new_node.last_pos = new_node.last_pos +  leftOperand.last_pos
+
+
                 else:
                     # It is a * only has one middle child
                     operand = tree_stack.pop(0)
@@ -85,7 +89,41 @@ class Regex:
                     new_node = Node(middle_child=operand,value=item, left_child=None, right_child=None)
                     new_node.first_pos = operand.first_pos
                     new_node.last_pos = operand.last_pos
+
+
                 # Add the new node to the tree stack
                 tree_stack.insert(0, new_node)
+
+        curr_node = tree_stack[0]
+        follow_pos = {}
+        visit_queue = [curr_node.left_child]
+        visited = []
+        for i in range(1, position + 1):
+            follow_pos[str(i)] = []
+
+        while len(visit_queue) != 0:
+            visit_node = visit_queue.pop()
+            if visit_node in visited:
+                continue
+
+            if visit_node.middle_child is None:
+                if visit_node.left_child is not None and visit_node.left_child.value == "@":
+                    for fp in visit_node.left_child.last_pos:
+                        for lp in visit_node.right_child.first_pos:
+                            follow_pos[str(fp)].append(lp)
+            if visit_node.middle_child is not None:
+                if visit_node.value == "*":
+                    for fp in visit_node.last_pos:
+                        for lp in visit_node.first_pos:
+                            follow_pos[str(fp)].append(lp)
+
+            if visit_node.single_child and visit_node.middle_child is not None:
+                visit_queue.append(visit_node.middle_child)
+            elif not visit_node.single_child and visit_node.left_child is not None:
+                visit_queue.append(visit_node.left_child)
+                visit_queue.append(visit_node.right_child)
+            visited.append(visit_node)
+
+
         return tree_stack[0]
 
